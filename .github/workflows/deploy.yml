@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Execute deployment on VPS
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
 
         with:
@@ -19,4 +19,6 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
 
           script: |
-            echo "GitHub Actions connected successfully"
+            cd ~/apps/myapp
+            docker compose down
+            docker compose up -d --build
