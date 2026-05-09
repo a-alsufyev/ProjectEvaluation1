@@ -1,0 +1,138 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function hasRole(role) {
+      return isSignedIn() && getUserData().role == role;
+    }
+
+    function isAdmin() {
+      return hasRole('admin');
+    }
+
+    function isAnalyst() {
+      return hasRole('analyst') || isAdmin();
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Collections ---
+
+    // Users
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      
+      function isValidUser(data) {
+        return data.keys().hasAll(['email', 'role', 'displayName']) &&
+               data.email is string && data.email.size() <= 200 &&
+               data.role in ['admin', 'analyst', 'viewer'] &&
+               data.displayName is string && data.displayName.size() <= 200;
+      }
+
+      allow create: if isOwner(userId) && isValidUser(incoming()) && incoming().role == 'analyst';
+      allow update: if isOwner(userId) && isValidUser(incoming()) && 
+                    incoming().role == existing().role; // Prevent self-elevation
+    }
+
+    // Modules
+    match /modules/{moduleId} {
+      // Allow anyone to read modules for the demo/test version
+      allow read: if true; 
+      
+      function isValidModule(data) {
+        return data.keys().hasAll(['title', 'development_cost', 'integration_cost']) &&
+               data.title is string && data.title.size() <= 300 &&
+               data.development_cost is number && data.development_cost >= 0 &&
+               data.integration_cost is number && data.integration_cost >= 0;
+      }
+
+      allow create: if isValidModule(incoming()); // Relaxed for demo seeding
+      allow update: if isValidModule(incoming()); // Relaxed for demo
+      allow delete: if true;
+    }
+
+    // Estimates
+    match /estimates/{estimateId} {
+      allow read: if true;
+      
+      function isValidEstimate(data) {
+        return data.keys().hasAll(['project_id', 'type', 'custom_title', 'created_by']) &&
+               data.project_id is string &&
+               data.type in ['module', 'product', 'service'] &&
+               data.custom_title is string && data.custom_title.size() <= 300 &&
+               data.created_by is string &&
+               // Optional fields based on type
+               (data.type == 'module' ? (data.base_module_id is string && data.development_cost is number && data.integration_cost is number) : true) &&
+               (data.type == 'product' ? (data.base_product_id is string && data.license_cost is number) : true) &&
+               (data.type == 'service' ? (data.development_cost is number && data.integration_cost is number) : true);
+      }
+
+      allow create: if true; 
+      allow update: if (isOwner(existing().created_by) || isAdmin()) && isValidEstimate(incoming());
+      allow delete: if isOwner(existing().created_by) || isAdmin();
+    }
+
+    // Projects
+    match /projects/{projectId} {
+      allow read: if true;
+      
+      function isValidProject(data) {
+        return data.keys().hasAll(['name', 'created_by']) &&
+               data.name is string && data.name.size() <= 200 &&
+               data.created_by is string;
+      }
+
+      allow create: if true;
+      allow update: if (isOwner(existing().created_by) || isAdmin()) && isValidProject(incoming());
+      allow delete: if isOwner(existing().created_by) || isAdmin();
+    }
+
+    // Products
+    match /products/{productId} {
+      allow read: if true;
+      
+      function isValidProduct(data) {
+        return data.keys().hasAll(['title', 'license_cost']) &&
+               data.title is string && data.title.size() <= 300 &&
+               data.license_cost is number && data.license_cost >= 0;
+      }
+
+      allow create: if true; // Relaxed for demo seeding
+      allow update: if true;
+      allow delete: if true;
+    }
+  }
+}

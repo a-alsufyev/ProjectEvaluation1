@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "Module": {
+      "title": "Module",
+      "description": "Historical project module data used for estimation",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Title of the module" },
+        "description": { "type": "string", "description": "Detailed description" },
+        "development_cost": { "type": "number", "description": "Historical development cost" },
+        "integration_cost": { "type": "number", "description": "Historical integration cost" },
+        "source_project": { "type": "string", "description": "Project where this module was originally used" },
+        "category": { "type": "string", "description": "Module category" },
+        "tags": { "type": "array", "items": { "type": "string" }, "description": "Keywords for search" },
+        "synonyms": { "type": "array", "items": { "type": "string" }, "description": "Alternative names" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "embedding": { "type": "array", "items": { "type": "number" }, "description": "Vector embedding for semantic search" }
+      },
+      "required": ["title", "development_cost", "integration_cost"]
+    },
+    "Estimate": {
+      "title": "Estimate",
+      "description": "A new project estimation based on a historical module or product",
+      "type": "object",
+      "properties": {
+        "project_id": { "type": "string", "description": "ID of the parent project" },
+        "type": { "type": "string", "enum": ["module", "product", "service"], "description": "Type of entry" },
+        "base_module_id": { "type": "string", "description": "ID of the source module (if type is module)" },
+        "base_product_id": { "type": "string", "description": "ID of the source product (if type is product)" },
+        "custom_title": { "type": "string", "description": "Adapted title for the new project" },
+        "development_cost": { "type": "number", "description": "Modified development cost (for modules)" },
+        "integration_cost": { "type": "number", "description": "Modified integration cost (for modules)" },
+        "license_cost": { "type": "number", "description": "License cost (for products)" },
+        "comment": { "type": "string", "description": "Notes on this specific estimation" },
+        "created_by": { "type": "string", "description": "UID of the creator" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["project_id", "type", "custom_title", "created_by"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "A collection of module estimates for a new project",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the project" },
+        "created_by": { "type": "string", "description": "UID of the creator" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["draft", "finalized"] },
+        "license_support_cost": { "type": "number", "description": "Manual or calculated license support cost" },
+        "technical_support_cost": { "type": "number", "description": "Manual or calculated technical support cost" }
+      },
+      "required": ["name", "created_by"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Ready-made product with license cost",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "license_cost": { "type": "number" },
+        "description": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "license_cost"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile and permissions",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "analyst", "viewer"] },
+        "displayName": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "modules": {
+      "schema": "Module",
+      "description": "Collection of historical project modules"
+    },
+    "estimates": {
+      "schema": "Estimate",
+      "description": "Collection of current project estimates"
+    },
+    "projects": {
+      "schema": "Project",
+      "description": "Collection of grouped estimates"
+    },
+    "products": {
+      "schema": "Product",
+      "description": "Collection of ready-made products"
+    },
+    "users": {
+      "schema": "User",
+      "description": "Collection of user profiles"
+    }
+  }
+}
