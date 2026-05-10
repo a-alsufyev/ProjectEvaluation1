@@ -8,6 +8,8 @@ import { EstimateForm } from './components/EstimateForm';
 import { ProjectWizard } from './components/ProjectWizard';
 import { ModuleList } from './components/ModuleList';
 import { ProjectList } from './components/ProjectList';
+import { RatesManager } from './components/RatesManager';
+import { LaborEstimator } from './components/LaborEstimator';
 import { ProjectModule, Project } from './types';
 import { Loader2, LogIn } from 'lucide-react';
 
@@ -108,6 +110,10 @@ function AppContent() {
             onNewProject={() => setActiveTab('new')} 
           />
         );
+      case 'rates':
+        return <RatesManager />;
+      case 'estimator':
+        return <LaborEstimator />;
       default:
         return <Dashboard onSearch={handleSearch} onSelectModule={handleSelectModule} />;
     }

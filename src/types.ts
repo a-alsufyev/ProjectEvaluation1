@@ -11,6 +11,22 @@ export interface UserProfile {
   displayName: string;
 }
 
+export interface LaborDetail {
+  roleId: string;
+  roleName: string;
+  days: number;
+  ratePerDay: number;
+  total: number;
+}
+
+export interface SpecialistRate {
+  id: string;
+  role: string;
+  hourly_rate: number;
+  daily_rate: number;
+  created_at: any;
+}
+
 export interface ProjectModule {
   id: string;
   title: string;
@@ -24,6 +40,17 @@ export interface ProjectModule {
   created_at: string;
   updated_at: string;
   embedding?: number[];
+  labor_details?: LaborDetail[];
+}
+
+export interface Service {
+  id: string;
+  title: string;
+  development_cost: number;
+  integration_cost: number;
+  description: string;
+  created_at: any;
+  labor_details?: LaborDetail[];
 }
 
 export interface Product {
@@ -57,6 +84,7 @@ export interface Estimate {
   comment: string;
   created_by: string;
   created_at: string;
+  labor_details?: LaborDetail[];
 }
 
 export interface SearchResult extends ProjectModule {

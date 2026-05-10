@@ -15,7 +15,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db, auth } from '../firebase';
-import { ProjectModule, Estimate, UserProfile, Project, Product } from '../../types';
+import { ProjectModule, Estimate, UserProfile, Project, Product, SpecialistRate, Service } from '../../types';
 
 enum OperationType {
   CREATE = 'create',
@@ -97,6 +97,18 @@ export const DataService = {
     }
   },
 
+  async updateModule(id: string, data: Partial<ProjectModule>) {
+    const path = `modules/${id}`;
+    try {
+      await updateDoc(doc(db, 'modules', id), {
+        ...data,
+        updated_at: serverTimestamp(),
+      });
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, path);
+    }
+  },
+
   // Estimates
   async getEstimates(): Promise<Estimate[]> {
     const path = 'estimates';
@@ -164,6 +176,103 @@ export const DataService = {
       return docRef.id;
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, path);
+    }
+  },
+
+  async updateProduct(id: string, data: Partial<Product>) {
+    const path = `products/${id}`;
+    try {
+      await updateDoc(doc(db, 'products', id), data);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, path);
+    }
+  },
+
+  // Services
+  async getServices(): Promise<Service[]> {
+    const path = 'services';
+    try {
+      const q = query(collection(db, path), orderBy('title'));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Service));
+    } catch (error) {
+      handleFirestoreError(error, OperationType.LIST, path);
+    }
+    return [];
+  },
+
+  async createService(data: Omit<Service, 'id' | 'created_at'>) {
+    const path = 'services';
+    try {
+      const docRef = await addDoc(collection(db, path), {
+        ...data,
+        created_at: serverTimestamp(),
+      });
+      return docRef.id;
+    } catch (error) {
+      handleFirestoreError(error, OperationType.CREATE, path);
+    }
+  },
+
+  async updateService(id: string, data: Partial<Service>) {
+    const path = `services/${id}`;
+    try {
+      await updateDoc(doc(db, 'services', id), data);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, path);
+    }
+  },
+
+  async deleteService(id: string) {
+    const path = `services/${id}`;
+    try {
+      await deleteDoc(doc(db, 'services', id));
+    } catch (error) {
+      handleFirestoreError(error, OperationType.DELETE, path);
+    }
+  },
+
+  // Rates
+  async getRates(): Promise<SpecialistRate[]> {
+    const path = 'rates';
+    try {
+      const q = query(collection(db, path), orderBy('role'));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SpecialistRate));
+    } catch (error) {
+      handleFirestoreError(error, OperationType.LIST, path);
+    }
+    return [];
+  },
+
+  async createRate(data: Omit<SpecialistRate, 'id' | 'created_at'>) {
+    const path = 'rates';
+    try {
+      const docRef = await addDoc(collection(db, path), {
+        ...data,
+        created_at: serverTimestamp(),
+      });
+      return docRef.id;
+    } catch (error) {
+      handleFirestoreError(error, OperationType.CREATE, path);
+    }
+  },
+
+  async updateRate(id: string, data: Partial<SpecialistRate>) {
+    const path = `rates/${id}`;
+    try {
+      await updateDoc(doc(db, 'rates', id), data);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, path);
+    }
+  },
+
+  async deleteRate(id: string) {
+    const path = `rates/${id}`;
+    try {
+      await deleteDoc(doc(db, 'rates', id));
+    } catch (error) {
+      handleFirestoreError(error, OperationType.DELETE, path);
     }
   },
 

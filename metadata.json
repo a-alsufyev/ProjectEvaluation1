@@ -1,6 +1,6 @@
 {
   "name": "Project Evaluation Intelligence",
-  "description": "An AI-powered system for rapid project estimation based on historical data, semantic search, and cost recommendations.",
+  "description": "AI-powered project estimation system with semantic search, historical module analysis, and labor-based cost construction using specialist rates.",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }

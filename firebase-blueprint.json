@@ -15,9 +15,36 @@
         "synonyms": { "type": "array", "items": { "type": "string" }, "description": "Alternative names" },
         "created_at": { "type": "string", "format": "date-time" },
         "updated_at": { "type": "string", "format": "date-time" },
-        "embedding": { "type": "array", "items": { "type": "number" }, "description": "Vector embedding for semantic search" }
+        "embedding": { "type": "array", "items": { "type": "number" }, "description": "Vector embedding for semantic search" },
+        "labor_details": { "type": "array", "items": { "$ref": "#/definitions/LaborDetail" } }
       },
       "required": ["title", "development_cost", "integration_cost"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Typical service or work (e.g. testing, discovery)",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "development_cost": { "type": "number" },
+        "integration_cost": { "type": "number" },
+        "description": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "labor_details": { "type": "array", "items": { "$ref": "#/definitions/LaborDetail" } }
+      },
+      "required": ["title", "development_cost"]
+    },
+    "SpecialistRate": {
+      "title": "Specialist Rate",
+      "description": "Hourly and daily rates for specific roles",
+      "type": "object",
+      "properties": {
+        "role": { "type": "string" },
+        "hourly_rate": { "type": "number" },
+        "daily_rate": { "type": "number" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["role", "hourly_rate", "daily_rate"]
     },
     "Estimate": {
       "title": "Estimate",
@@ -34,7 +61,8 @@
         "license_cost": { "type": "number", "description": "License cost (for products)" },
         "comment": { "type": "string", "description": "Notes on this specific estimation" },
         "created_by": { "type": "string", "description": "UID of the creator" },
-        "created_at": { "type": "string", "format": "date-time" }
+        "created_at": { "type": "string", "format": "date-time" },
+        "labor_details": { "type": "array", "items": { "$ref": "#/definitions/LaborDetail" } }
       },
       "required": ["project_id", "type", "custom_title", "created_by"]
     },
@@ -92,6 +120,14 @@
     "products": {
       "schema": "Product",
       "description": "Collection of ready-made products"
+    },
+    "services": {
+      "schema": "Service",
+      "description": "Collection of typical works/services"
+    },
+    "rates": {
+      "schema": "SpecialistRate",
+      "description": "Collection of specialist rates"
     },
     "users": {
       "schema": "User",
