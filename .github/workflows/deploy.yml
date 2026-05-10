@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: CI/CD Deploy
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy via SSH
+      - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
 
         with:
@@ -20,5 +20,5 @@ jobs:
 
           script: |
             cd ~/apps/myapp
-            docker compose down
+            git pull origin main
             docker compose up -d --build
