@@ -12,12 +12,14 @@ import { RatesManager } from './components/RatesManager';
 import { LaborEstimator } from './components/LaborEstimator';
 import { ProjectModule, Project } from './types';
 import { Loader2, LogIn } from 'lucide-react';
+import { motion } from 'motion/react';
 
 function AppContent() {
-  const { user, profile, loading, signIn, signInGuest } = useAuth();
+  const { user, profile, loading, signIn } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedModule, setSelectedModule] = useState<ProjectModule | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [authError, setAuthError] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -26,6 +28,15 @@ function AppContent() {
       </div>
     );
   }
+
+  const handleSignIn = async () => {
+    setAuthError(null);
+    try {
+      await signIn();
+    } catch (error: any) {
+      setAuthError(error.message || 'Ошибка авторизации. Попробуйте снова.');
+    }
+  };
 
   if (!profile) {
     return (
@@ -41,22 +52,32 @@ function AppContent() {
              </div>
           </div>
           
-          <div className="space-y-4">
-            <button 
-              onClick={signIn}
-              className="w-full bg-[#9932CC] text-white py-5 px-8 rounded-2xl font-bold uppercase tracking-widest hover:bg-[#9932CC]/90 transition-all flex items-center justify-center space-x-3 shadow-[8px_8px_0px_rgba(153,50,204,0.2)] active:shadow-none active:translate-x-1 active:translate-y-1"
-            >
-              <LogIn size={20} />
-              <span>Войти с Google</span>
-            </button>
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <button 
+                onClick={handleSignIn}
+                className="w-full bg-[#9932CC] text-white py-5 px-8 rounded-2xl font-bold uppercase tracking-widest hover:bg-[#9932CC]/90 transition-all flex items-center justify-center space-x-3 shadow-[8px_8px_0px_rgba(153,50,204,0.2)] active:shadow-none active:translate-x-1 active:translate-y-1"
+              >
+                <LogIn size={20} />
+                <span>Войти с Google</span>
+              </button>
 
-            <button 
-              onClick={signInGuest}
-              className="w-full bg-white border-2 border-[#9932CC] text-[#9932CC] py-5 px-8 rounded-2xl font-bold uppercase tracking-widest hover:bg-[#9932CC]/5 transition-all flex items-center justify-center space-x-3 shadow-[8px_8px_0px_rgba(153,50,204,0.2)] active:shadow-none active:translate-x-1 active:translate-y-1"
-            >
-              <Loader2 size={20} />
-              <span>Войти как гость (режим Demo)</span>
-            </button>
+              <div className="bg-[#9932CC]/5 border border-[#9932CC]/10 rounded-xl p-4">
+                <p className="text-[10px] text-[#9932CC] font-bold uppercase leading-relaxed">
+                  Доступ ограничен. Только для корпоративных аккаунтов <span className="underline">@embedika.ru</span>
+                </p>
+              </div>
+            </div>
+
+            {authError && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-red-500 text-xs font-bold bg-red-50 p-3 rounded-lg border border-red-100"
+              >
+                {authError}
+              </motion.div>
+            )}
           </div>
 
           <p className="text-[10px] uppercase tracking-[0.3em] font-bold opacity-30">
