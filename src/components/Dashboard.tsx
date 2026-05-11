@@ -88,7 +88,7 @@ export function Dashboard({ onSearch, onSelectModule }: DashboardProps) {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="Введите название модуля или ключевые слова..."
+              placeholder="Начните вводить название модуля"
               className="w-full bg-white border-2 border-[#9932CC] rounded-2xl py-6 pl-14 pr-6 text-xl focus:outline-none focus:ring-4 focus:ring-[#9932CC]/5 transition-all shadow-[8px_8px_0px_rgba(153,50,204,1)] active:translate-x-1 active:translate-y-1 active:shadow-none"
             />
           </form>
