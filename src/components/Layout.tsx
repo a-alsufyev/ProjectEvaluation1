@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../lib/contexts/AuthContext';
-import { LayoutDashboard, Search, PlusCircle, Database, LogOut, ChevronRight, Menu, X, Folder, DollarSign, Calculator, Shield } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, Database, LogOut, ChevronRight, Menu, X, Folder, DollarSign, Calculator, Shield } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserRole } from '../types';
@@ -17,7 +17,6 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
 
   const menuItems = [
     { id: 'dashboard', label: 'Панель', icon: LayoutDashboard },
-    { id: 'search', label: 'Поиск', icon: Search },
     { id: 'new', label: 'Новый проект', icon: PlusCircle },
     { id: 'estimator', label: 'Конструктор оценки', icon: Calculator },
     { id: 'rates', label: 'Ставки специалистов', icon: DollarSign },
