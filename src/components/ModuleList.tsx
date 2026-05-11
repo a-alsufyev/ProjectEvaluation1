@@ -9,10 +9,9 @@ export function ModuleList() {
   const [modules, setModules] = useState<ProjectModule[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [services, setServices] = useState<Service[]>([]);
-  const [view, setView] = useState<'modules' | 'products' | 'services'>('modules');
+  const [view, setView] = useState<'products' | 'modules' | 'services'>('products');
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isSeeding, setIsSeeding] = useState(false);
   const [selectedLaborDetails, setSelectedLaborDetails] = useState<{title: string, labor: LaborDetail[]} | null>(null);
 
   useEffect(() => {
@@ -30,65 +29,6 @@ export function ModuleList() {
     };
     fetchData();
   }, []);
-
-  const seedData = async () => {
-    setIsSeeding(true);
-    const moduleExamples = [
-      {
-        title: "Модуль поиска синонимов",
-        description: "Интеллектуальный поиск терминов с учетом лингвистической близости и словаря синонимов.",
-        development_cost: 0,
-        integration_cost: 200000,
-        source_project: "Продукт X",
-        category: "Поиск",
-        tags: ["nlp", "search", "synonyms"],
-        synonyms: ["поисковый движок", "семантический поиск"]
-      },
-      {
-        title: "Модуль распознавания лиц (V3)",
-        description: "Высокоточное распознавание лиц в реальном времени с поддержкой маскировки.",
-        development_cost: 5000000,
-        integration_cost: 500000,
-        source_project: "Проект Безопасность",
-        category: "ИИ",
-        tags: ["ai", "vision", "security"],
-        synonyms: ["face processing", "biometrics"]
-      }
-    ];
-
-    const productExamples = [
-      {
-        title: "CRM Core Engine",
-        license_cost: 2500000,
-        description: "Базовое ядро CRM системы с поддержкой мультитенантности и гибких рабочих процессов."
-      },
-      {
-        title: "Analytics Suite Pro",
-        license_cost: 1200000,
-        description: "Комплексная система аналитики с визуализацией данных в реальном времени."
-      },
-      {
-        title: "Security Gate Enterprise",
-        license_cost: 800000,
-        description: "Программный комплекс для обеспечения безопасности сетевых соединений."
-      }
-    ];
-
-    for (const ex of moduleExamples) {
-      await DataService.createModule(ex);
-    }
-    for (const ex of productExamples) {
-      await DataService.createProduct(ex);
-    }
-    
-    const [m, p] = await Promise.all([
-      DataService.getModules(),
-      DataService.getProducts()
-    ]);
-    setModules(m || []);
-    setProducts(p || []);
-    setIsSeeding(false);
-  };
 
   const filteredItems = view === 'modules' 
     ? modules.filter(m => 
@@ -483,6 +423,16 @@ export function ModuleList() {
         <div className="space-y-4 text-black">
           <div className="flex items-center space-x-2 bg-[#9932CC]/5 p-1 rounded-xl w-fit border border-[#9932CC]/10">
             <button 
+              onClick={() => setView('products')}
+              className={cn(
+                "flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-bold uppercase transition-all",
+                view === 'products' ? "bg-[#9932CC] text-white shadow-lg" : "hover:bg-[#9932CC]/10 text-[#9932CC]"
+              )}
+            >
+              <Package size={14} />
+              <span>Продукты (лицензии)</span>
+            </button>
+            <button 
               onClick={() => setView('modules')}
               className={cn(
                 "flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-bold uppercase transition-all",
@@ -491,16 +441,6 @@ export function ModuleList() {
             >
               <Code size={14} />
               <span>Модули</span>
-            </button>
-            <button 
-              onClick={() => setView('products')}
-              className={cn(
-                "flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-bold uppercase transition-all",
-                view === 'products' ? "bg-[#9932CC] text-white shadow-lg" : "hover:bg-[#9932CC]/10 text-[#9932CC]"
-              )}
-            >
-              <Package size={14} />
-              <span>Продукт (Лиц)</span>
             </button>
             <button 
               onClick={() => setView('services')}
@@ -524,14 +464,6 @@ export function ModuleList() {
         </div>
         
         <div className="flex items-center space-x-3 text-[#9932CC]">
-          <button 
-            disabled={isSeeding}
-            onClick={seedData} 
-            className="flex items-center space-x-2 px-4 py-2 border-2 border-[#9932CC] rounded-xl text-xs font-bold uppercase hover:bg-[#9932CC]/5 transition-all disabled:opacity-50"
-          >
-            {isSeeding ? <Loader2 size={14} className="animate-spin" /> : <Database size={14} />}
-            <span>Заполнить демо-данными</span>
-          </button>
           <button 
             onClick={() => setShowAddModal(true)}
             className="flex items-center space-x-2 px-4 py-2 bg-[#9932CC] text-white rounded-xl text-xs font-bold uppercase hover:bg-[#9932CC]/90 transition-all shadow-md"
