@@ -206,8 +206,26 @@ export const DataService = {
         ...data,
         created_at: serverTimestamp(),
       });
+      const newId = docRef.id;
+
+      // Bidirectional sync: Add this ID to all related products
+      if (data.related_product_ids && data.related_product_ids.length > 0) {
+        for (const targetId of data.related_product_ids) {
+          const tDoc = await getDoc(doc(db, 'products', targetId));
+          if (tDoc.exists()) {
+            const tData = tDoc.data() as Product;
+            const tRelated = tData.related_product_ids || [];
+            if (!tRelated.includes(newId)) {
+              await updateDoc(doc(db, 'products', targetId), {
+                related_product_ids: [...tRelated, newId]
+              });
+            }
+          }
+        }
+      }
+
       await this.logAction('Создание продукта', `Название: ${data.title}`);
-      return docRef.id;
+      return newId;
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, path);
     }
@@ -216,7 +234,53 @@ export const DataService = {
   async updateProduct(id: string, data: Partial<Product>) {
     const path = `products/${id}`;
     try {
-      await updateDoc(doc(db, 'products', id), data);
+      const productRef = doc(db, 'products', id);
+      
+      // Get old data if we're updating relationships
+      let oldRelatedIds: string[] = [];
+      if (data.related_product_ids !== undefined) {
+        const snap = await getDoc(productRef);
+        if (snap.exists()) {
+          oldRelatedIds = (snap.data() as Product).related_product_ids || [];
+        }
+      }
+
+      await updateDoc(productRef, data);
+
+      // Bidirectional sync
+      if (data.related_product_ids !== undefined) {
+        const newRelatedIds = data.related_product_ids || [];
+        
+        const toAdd = newRelatedIds.filter(rid => !oldRelatedIds.includes(rid));
+        const toRemove = oldRelatedIds.filter(rid => !newRelatedIds.includes(rid));
+
+        // Add back-links
+        for (const targetId of toAdd) {
+          const tDoc = await getDoc(doc(db, 'products', targetId));
+          if (tDoc.exists()) {
+            const tData = tDoc.data() as Product;
+            const tRelated = tData.related_product_ids || [];
+            if (!tRelated.includes(id)) {
+              await updateDoc(doc(db, 'products', targetId), {
+                related_product_ids: [...tRelated, id]
+              });
+            }
+          }
+        }
+
+        // Remove back-links
+        for (const targetId of toRemove) {
+          const tDoc = await getDoc(doc(db, 'products', targetId));
+          if (tDoc.exists()) {
+            const tData = tDoc.data() as Product;
+            const tRelated = (tData.related_product_ids || []).filter(rid => rid !== id);
+            await updateDoc(doc(db, 'products', targetId), {
+              related_product_ids: tRelated
+            });
+          }
+        }
+      }
+
       await this.logAction('Обновление продукта', `ID: ${id}`);
     } catch (error) {
       handleFirestoreError(error, OperationType.UPDATE, path);
@@ -330,6 +394,22 @@ export const DataService = {
   async deleteProduct(id: string) {
     const path = `products/${id}`;
     try {
+      // Bidirectional sync: Remove this ID from all related products
+      const snap = await getDoc(doc(db, 'products', id));
+      if (snap.exists()) {
+        const relatedIds = (snap.data() as Product).related_product_ids || [];
+        for (const targetId of relatedIds) {
+          const tDoc = await getDoc(doc(db, 'products', targetId));
+          if (tDoc.exists()) {
+            const tData = tDoc.data() as Product;
+            const tRelated = (tData.related_product_ids || []).filter(rid => rid !== id);
+            await updateDoc(doc(db, 'products', targetId), {
+              related_product_ids: tRelated
+            });
+          }
+        }
+      }
+
       await deleteDoc(doc(db, 'products', id));
       await this.logAction('Удаление продукта', `ID: ${id}`);
     } catch (error) {
