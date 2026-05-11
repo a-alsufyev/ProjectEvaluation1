@@ -55,7 +55,7 @@ function AppContent() {
               className="w-full bg-white border-2 border-[#9932CC] text-[#9932CC] py-5 px-8 rounded-2xl font-bold uppercase tracking-widest hover:bg-[#9932CC]/5 transition-all flex items-center justify-center space-x-3 shadow-[8px_8px_0px_rgba(153,50,204,0.2)] active:shadow-none active:translate-x-1 active:translate-y-1"
             >
               <Loader2 size={20} />
-              <span>Войти как гость (Demo-режим)</span>
+              <span>Войти как гость (режим Demo)</span>
             </button>
           </div>
 
