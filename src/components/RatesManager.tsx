@@ -10,6 +10,7 @@ export const RatesManager: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [newRole, setNewRole] = useState({ role: '', hourly_rate: 0, daily_rate: 0 });
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
@@ -126,73 +127,104 @@ export const RatesManager: React.FC = () => {
             Управляйте ролями и стоимостью часа/дня разработки. Эти данные используются в конструкторе трудозатрат.
           </p>
         </div>
+
+        <button 
+          onClick={() => setShowAddForm(true)}
+          className="flex items-center space-x-2 px-6 py-3 bg-[#9932CC] text-white rounded-xl font-bold uppercase text-xs hover:bg-[#9932CC]/90 transition-all shadow-lg hover:shadow-[#9932CC]/30"
+        >
+          <Plus size={16} />
+          <span>Добавить специалиста</span>
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Creation Form */}
-        <div className="lg:col-span-1">
-          <div className="bg-white border-2 border-[#9932CC] rounded-3xl p-6 shadow-[8px_8px_0px_rgba(153,50,204,0.1)] space-y-6 sticky top-24">
-            <h3 className="text-xl font-bold italic serif text-[#9932CC]">Новый специалист</h3>
-            
-            <div className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold opacity-40">Должность / Роль</label>
-                <div className="flex items-center bg-[#9932CC]/5 rounded-xl px-4 py-3 border border-transparent focus-within:border-[#9932CC] transition-all">
-                  <Briefcase className="text-[#9932CC] mr-3" size={18} />
-                  <input 
-                    type="text" 
-                    value={newRole.role}
-                    onChange={(e) => setNewRole({ ...newRole, role: e.target.value })}
-                    placeholder="Напр. Backend-разработчик"
-                    className="bg-transparent outline-none w-full font-bold"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+      <AnimatePresence>
+        {showAddForm && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] flex items-center justify-center p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-white border-2 border-[#9932CC] rounded-3xl p-8 max-w-md w-full shadow-2xl space-y-6"
+            >
+              <h3 className="text-2xl font-bold italic serif text-[#9932CC]">Новый специалист</h3>
+              
+              <div className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold opacity-40">Ставка (час)</label>
-                  <div className="flex items-center bg-[#9932CC]/5 rounded-xl px-4 py-3">
-                    <Clock className="text-[#9932CC] mr-2" size={16} />
+                  <label className="text-[10px] uppercase font-bold opacity-40">Должность / Роль</label>
+                  <div className="flex items-center bg-[#9932CC]/5 rounded-xl px-4 py-3 border border-transparent focus-within:border-[#9932CC] transition-all">
+                    <Briefcase className="text-[#9932CC] mr-3" size={18} />
                     <input 
-                      type="number" 
-                      value={newRole.hourly_rate}
-                      onChange={(e) => {
-                        const val = Number(e.target.value);
-                        setNewRole({ ...newRole, hourly_rate: val, daily_rate: val * 8 });
-                      }}
-                      className="bg-transparent outline-none w-full font-mono font-bold"
+                      type="text" 
+                      value={newRole.role}
+                      onChange={(e) => setNewRole({ ...newRole, role: e.target.value })}
+                      placeholder="Напр. Backend-разработчик"
+                      className="bg-transparent outline-none w-full font-bold"
                     />
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold opacity-40">Ставка (день)</label>
-                  <div className="flex items-center bg-[#9932CC]/5 rounded-xl px-4 py-3">
-                    <Calendar className="text-[#9932CC] mr-2" size={16} />
-                    <input 
-                      type="number" 
-                      value={newRole.daily_rate}
-                      onChange={(e) => setNewRole({ ...newRole, daily_rate: Number(e.target.value) })}
-                      className="bg-transparent outline-none w-full font-mono font-bold"
-                    />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase font-bold opacity-40">Ставка (час)</label>
+                    <div className="flex items-center bg-[#9932CC]/5 rounded-xl px-4 py-3">
+                      <Clock className="text-[#9932CC] mr-2" size={16} />
+                      <input 
+                        type="number" 
+                        value={newRole.hourly_rate}
+                        onChange={(e) => {
+                          const val = Number(e.target.value);
+                          setNewRole({ ...newRole, hourly_rate: val, daily_rate: val * 8 });
+                        }}
+                        className="bg-transparent outline-none w-full font-mono font-bold"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase font-bold opacity-40">Ставка (день)</label>
+                    <div className="flex items-center bg-[#9932CC]/5 rounded-xl px-4 py-3">
+                      <Calendar className="text-[#9932CC] mr-2" size={16} />
+                      <input 
+                        type="number" 
+                        value={newRole.daily_rate}
+                        onChange={(e) => setNewRole({ ...newRole, daily_rate: Number(e.target.value) })}
+                        className="bg-transparent outline-none w-full font-mono font-bold"
+                      />
+                    </div>
                   </div>
                 </div>
+
+                <div className="flex space-x-3 pt-4">
+                  <button 
+                    onClick={() => setShowAddForm(false)}
+                    className="flex-1 py-3 border-2 border-black/5 rounded-xl font-bold uppercase text-[10px] hover:bg-black/5 transition-all text-black/60"
+                  >
+                    Отмена
+                  </button>
+                  <button 
+                    onClick={async () => {
+                      await handleCreate();
+                      setShowAddForm(false);
+                    }}
+                    disabled={saving || !newRole.role}
+                    className="flex-[2] py-3 bg-[#9932CC] text-white rounded-xl font-bold uppercase text-[10px] shadow-lg hover:shadow-[#9932CC]/30 transition-all disabled:opacity-50"
+                  >
+                    {saving ? <Loader2 size={14} className="animate-spin mx-auto" /> : 'Добавить ставку'}
+                  </button>
+                </div>
               </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-              <button 
-                onClick={handleCreate}
-                disabled={saving || !newRole.role}
-                className="w-full py-4 bg-[#9932CC] text-white rounded-2xl font-bold uppercase text-xs shadow-lg hover:shadow-xl hover:translate-y-[-2px] transition-all disabled:opacity-50 disabled:translate-y-0"
-              >
-                {saving ? <Loader2 className="animate-spin mx-auto" size={20} /> : 'Добавить ставку'}
-              </button>
-            </div>
-          </div>
-        </div>
-
+      <div className="w-full">
         {/* Rates Table */}
-        <div className="lg:col-span-2">
-          <div className="bg-white border-2 border-black/5 rounded-3xl overflow-hidden shadow-sm">
+        <div className="bg-white border-2 border-black/5 rounded-3xl overflow-hidden shadow-sm">
             <table className="w-full text-left">
               <thead className="bg-black text-white">
                 <tr>
@@ -250,6 +282,5 @@ export const RatesManager: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
