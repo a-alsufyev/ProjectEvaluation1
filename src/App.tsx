@@ -10,7 +10,8 @@ import { ModuleList } from './components/ModuleList';
 import { ProjectList } from './components/ProjectList';
 import { RatesManager } from './components/RatesManager';
 import { LaborEstimator } from './components/LaborEstimator';
-import { ProjectModule, Project } from './types';
+import { AdminPanel } from './components/AdminPanel';
+import { ProjectModule, Project, UserRole } from './types';
 import { Loader2, LogIn } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -135,6 +136,8 @@ function AppContent() {
         return <RatesManager />;
       case 'estimator':
         return <LaborEstimator />;
+      case 'admin':
+        return profile?.role === UserRole.ADMIN ? <AdminPanel /> : <Dashboard onSearch={handleSearch} onSelectModule={handleSelectModule} />;
       default:
         return <Dashboard onSearch={handleSearch} onSelectModule={handleSelectModule} />;
     }

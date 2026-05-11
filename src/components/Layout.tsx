@@ -1,8 +1,9 @@
 import React from 'react';
 import { useAuth } from '../lib/contexts/AuthContext';
-import { LayoutDashboard, Search, PlusCircle, Database, LogOut, ChevronRight, Menu, X, Folder, DollarSign, Calculator } from 'lucide-react';
+import { LayoutDashboard, Search, PlusCircle, Database, LogOut, ChevronRight, Menu, X, Folder, DollarSign, Calculator, Shield } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
+import { UserRole } from '../types';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -23,6 +24,10 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
     { id: 'projects', label: 'Проекты', icon: Folder },
     { id: 'modules', label: 'База данных', icon: Database },
   ];
+
+  if (profile?.role === UserRole.ADMIN) {
+    menuItems.push({ id: 'admin', label: 'Администрирование', icon: Shield });
+  }
 
   return (
     <div className="flex h-screen bg-white text-black font-sans overflow-hidden">
@@ -50,7 +55,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
           </button>
         </div>
 
-        <nav className="flex-1 px-4 mt-6 space-y-2">
+        <nav className="flex-1 px-4 mt-6 space-y-2 overflow-y-auto custom-scrollbar">
           {menuItems.map((item) => (
             <button
               key={item.id}

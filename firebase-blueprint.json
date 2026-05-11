@@ -121,6 +121,20 @@
       "schema": "Product",
       "description": "Collection of ready-made products"
     },
+    "audit_logs": {
+      "schema": {
+        "title": "Audit Log",
+        "type": "object",
+        "properties": {
+          "user_id": { "type": "string" },
+          "user_email": { "type": "string" },
+          "action": { "type": "string" },
+          "details": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      },
+      "description": "System-wide activity logs"
+    },
     "services": {
       "schema": "Service",
       "description": "Collection of typical works/services"

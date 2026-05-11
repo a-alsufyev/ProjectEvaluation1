@@ -119,7 +119,9 @@ export function ModuleList() {
       setFormData({
         title: item.title,
         description: item.description,
-        licenseCost: item.license_cost
+        licenseCost: item.license_cost,
+        type: item.type || 'system',
+        related_ids: item.related_product_ids || []
       });
     } else {
       setFormData({
@@ -146,7 +148,9 @@ export function ModuleList() {
         await DataService.updateProduct(editingId, {
           title: formData.title,
           license_cost: Number(formData.licenseCost),
-          description: formData.description
+          description: formData.description,
+          type: formData.type,
+          related_product_ids: formData.related_ids
         });
       } else {
         await DataService.updateService(editingId, {
@@ -172,7 +176,9 @@ export function ModuleList() {
         await DataService.createProduct({
           title: formData.title || 'Новый продукт',
           license_cost: Number(formData.licenseCost) || 0,
-          description: formData.description || ''
+          description: formData.description || '',
+          type: formData.type || 'system',
+          related_product_ids: formData.related_ids || []
         });
       } else {
         await DataService.createService({
@@ -319,13 +325,13 @@ export function ModuleList() {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border-2 border-[#9932CC] space-y-6"
+              className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border-2 border-[#9932CC] space-y-6 max-h-[90vh] flex flex-col"
             >
-              <h2 className="text-2xl font-bold tracking-tight italic serif">
+              <h2 className="text-2xl font-bold tracking-tight italic serif shrink-0">
                 {editingId ? 'Редактировать' : 'Добавить'} {view === 'modules' ? 'модуль' : view === 'products' ? 'продукт' : 'работу'}
               </h2>
               
-              <div className="space-y-4">
+              <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-1">
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase font-bold opacity-40">Название</label>
                   <input 
@@ -346,15 +352,73 @@ export function ModuleList() {
                 </div>
 
                 {view === 'products' ? (
-                  <div className="space-y-1">
-                    <label className="text-[10px] uppercase font-bold opacity-40">Стоимость лицензии (₽)</label>
-                    <input 
-                      type="number" 
-                      value={formData.licenseCost || ''}
-                      onChange={(e) => setFormData({...formData, licenseCost: e.target.value})}
-                      className="w-full bg-[#9932CC]/5 border border-[#9932CC]/10 rounded-xl p-3 outline-none focus:ring-2 focus:ring-[#9932CC]/20"
-                    />
-                  </div>
+                  <>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase font-bold opacity-40">Тип продукта</label>
+                      <div className="flex space-x-2">
+                        <button 
+                          onClick={() => setFormData({ ...formData, type: 'system' })}
+                          className={cn(
+                            "flex-1 py-2 px-3 rounded-xl text-[10px] font-bold uppercase transition-all border",
+                            formData.type === 'system' || !formData.type ? "bg-[#9932CC] text-white border-[#9932CC]" : "bg-[#9932CC]/5 text-[#9932CC] border-[#9932CC]/10"
+                          )}
+                        >
+                          Система
+                        </button>
+                        <button 
+                          onClick={() => setFormData({ ...formData, type: 'service' })}
+                          className={cn(
+                            "flex-1 py-2 px-3 rounded-xl text-[10px] font-bold uppercase transition-all border",
+                            formData.type === 'service' ? "bg-[#9932CC] text-white border-[#9932CC]" : "bg-[#9932CC]/5 text-[#9932CC] border-[#9932CC]/10"
+                          )}
+                        >
+                          Сервис
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase font-bold opacity-40">Стоимость лицензии (₽)</label>
+                      <input 
+                        type="number" 
+                        value={formData.licenseCost || ''}
+                        onChange={(e) => setFormData({...formData, licenseCost: e.target.value})}
+                        className="w-full bg-[#9932CC]/5 border border-[#9932CC]/10 rounded-xl p-3 outline-none focus:ring-2 focus:ring-[#9932CC]/20"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] uppercase font-bold opacity-40">
+                        {formData.type === 'service' ? 'Относится к системам' : 'Входящие сервисы'}
+                      </label>
+                      <div className="bg-[#9932CC]/5 border border-[#9932CC]/10 rounded-xl p-3 max-h-40 overflow-y-auto space-y-2">
+                        {products
+                          .filter(p => p.id !== editingId && (formData.type === 'service' ? p.type !== 'service' : p.type === 'service'))
+                          .map(p => (
+                            <label key={p.id} className="flex items-center space-x-3 cursor-pointer group">
+                              <input 
+                                type="checkbox"
+                                checked={(formData.related_ids || []).includes(p.id)}
+                                onChange={(e) => {
+                                  const currentIds = formData.related_ids || [];
+                                  if (e.target.checked) {
+                                    setFormData({ ...formData, related_ids: [...currentIds, p.id] });
+                                  } else {
+                                    setFormData({ ...formData, related_ids: currentIds.filter((id: string) => id !== p.id) });
+                                  }
+                                }}
+                                className="w-4 h-4 rounded border-[#9932CC] text-[#9932CC] focus:ring-[#9932CC]"
+                              />
+                              <span className="text-sm font-medium group-hover:text-[#9932CC] transition-colors">{p.title}</span>
+                            </label>
+                          ))
+                        }
+                        {products.filter(p => p.id !== editingId && (formData.type === 'service' ? p.type !== 'service' : p.type === 'service')).length === 0 && (
+                          <p className="text-[10px] italic opacity-40">Нет доступных {formData.type === 'service' ? 'систем' : 'сервисов'}</p>
+                        )}
+                      </div>
+                    </div>
+                  </>
                 ) : (
                   <>
                     <div className="grid grid-cols-2 gap-4">
@@ -392,7 +456,7 @@ export function ModuleList() {
                 )}
               </div>
 
-              <div className="flex space-x-3 pt-4">
+              <div className="flex space-x-3 pt-4 border-t-2 border-[#9932CC]/10 shrink-0">
                 <button 
                   onClick={() => {
                     setShowAddModal(false);
@@ -541,7 +605,20 @@ export function ModuleList() {
                     </td>
                     <td className="p-6 text-center">
                       {view === 'products' ? (
-                        <span className="px-3 py-1 bg-[#9932CC]/10 text-[#9932CC] rounded-full text-[10px] font-bold uppercase">Лицензия</span>
+                        <div className="flex flex-col items-center">
+                          <span className={cn(
+                            "px-3 py-1 rounded-full text-[10px] font-bold uppercase",
+                            (item as Product).type === 'service' ? "bg-blue-100 text-blue-600" : "bg-[#9932CC]/10 text-[#9932CC]"
+                          )}>
+                            {(item as Product).type === 'service' ? 'Сервис' : 'Система'}
+                          </span>
+                          {(item as Product).related_product_ids && (item as Product).related_product_ids!.length > 0 && (
+                            <span className="text-[8px] mt-1 font-bold opacity-40 italic">
+                              {(item as Product).type === 'service' ? 'Входит в: ' : 'Состав: '}
+                              {(item as Product).related_product_ids!.length}
+                            </span>
+                          )}
+                        </div>
                       ) : (
                         <div className="flex flex-col items-center">
                           <span className="px-3 py-1 bg-[#9932CC]/10 text-[#9932CC] rounded-full text-[10px] font-bold uppercase mb-1">

@@ -77,7 +77,8 @@ export function ProjectWizard({ onCancel, onSuccess }: ProjectWizardProps) {
       title: product.title,
       licenseCost: product.license_cost,
       comment: '',
-      baseProductId: product.id
+      baseProductId: product.id,
+      selectedServiceIds: product.type === 'system' ? [] : undefined
     };
     setEntries([newEntry, ...entries]);
     setSearchQuery('');
@@ -193,6 +194,24 @@ export function ProjectWizard({ onCancel, onSuccess }: ProjectWizardProps) {
               comment: entry.comment,
               created_by: profile.id
             });
+
+            // Add selected services as estimates
+            if (entry.selectedServiceIds && entry.selectedServiceIds.length > 0) {
+              for (const serviceId of entry.selectedServiceIds) {
+                const serviceProduct = allProducts.find(p => p.id === serviceId);
+                if (serviceProduct) {
+                  await DataService.createEstimate({
+                    project_id: projectId,
+                    type: 'product',
+                    base_product_id: serviceId,
+                    custom_title: `${serviceProduct.title} (в составе ${entry.title})`,
+                    license_cost: serviceProduct.license_cost,
+                    comment: `Включено в состав системы ${entry.title}`,
+                    created_by: profile.id
+                  });
+                }
+              }
+            }
           }
         } else if (entry.type === 'service') {
           // Services are project-specific, no historical data creation
@@ -217,8 +236,31 @@ export function ProjectWizard({ onCancel, onSuccess }: ProjectWizardProps) {
     }
   };
 
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    DataService.getProducts().then(setAllProducts);
+  }, []);
+
   const workCost = entries.filter(e => e.type === 'module' || e.type === 'service').reduce((acc, curr) => acc + (curr.devCost || 0) + (curr.integrationCost || 0), 0);
-  const licenseCost = entries.filter(e => e.type === 'product').reduce((acc, curr) => acc + (curr.licenseCost || 0), 0);
+  
+  const productLicenseCost = entries.filter(e => e.type === 'product').reduce((acc, curr) => {
+    let cost = curr.licenseCost || 0;
+    
+    // Add costs of selected services
+    if (curr.selectedServiceIds && curr.selectedServiceIds.length > 0) {
+      curr.selectedServiceIds.forEach(serviceId => {
+        const service = allProducts.find(p => p.id === serviceId);
+        if (service) {
+          cost += service.license_cost;
+        }
+      });
+    }
+    
+    return acc + cost;
+  }, 0);
+  
+  const licenseCost = productLicenseCost;
   
   const currentTS = technicalSupport !== null ? technicalSupport : workCost * 0.1;
   const currentLS = licenseSupport !== null ? licenseSupport : licenseCost * 0.1;
@@ -386,14 +428,54 @@ export function ProjectWizard({ onCancel, onSuccess }: ProjectWizardProps) {
                             </div>
                           </div>
                         ) : (
-                          <div className="space-y-1">
-                            <label className="text-[10px] uppercase font-bold opacity-40 tracking-wider">Лицензия (₽)</label>
-                            <input 
-                              type="number"
-                              value={entry.licenseCost}
-                              onChange={(e) => updateEntry(entry.id, { licenseCost: Number(e.target.value) })}
-                              className="w-full bg-[#9932CC]/5 rounded-lg p-3 font-mono font-bold text-sm focus:ring-2 focus:ring-[#9932CC]/10 text-[#9932CC] outline-none"
-                            />
+                          <div className="space-y-4">
+                            <div className="space-y-1">
+                              <label className="text-[10px] uppercase font-bold opacity-40 tracking-wider">Лицензия (₽)</label>
+                              <input 
+                                type="number"
+                                value={entry.licenseCost}
+                                onChange={(e) => updateEntry(entry.id, { licenseCost: Number(e.target.value) })}
+                                className="w-full bg-[#9932CC]/5 rounded-lg p-3 font-mono font-bold text-sm focus:ring-2 focus:ring-[#9932CC]/10 text-[#9932CC] outline-none"
+                              />
+                            </div>
+
+                            {entry.baseProductId && allProducts.find(p => p.id === entry.baseProductId)?.type === 'system' && (
+                              <div className="space-y-4 p-4 bg-[#9932CC]/5 rounded-2xl border border-[#9932CC]/10">
+                                <div className="flex items-center justify-between">
+                                  <label className="text-[10px] uppercase font-bold text-[#9932CC]">Входящие сервисы (модули)</label>
+                                  <Sparkles size={14} className="text-[#9932CC]/40" />
+                                </div>
+                                <div className="space-y-2">
+                                  {allProducts
+                                    .filter(p => allProducts.find(sys => sys.id === entry.baseProductId)?.related_product_ids?.includes(p.id))
+                                    .map(service => (
+                                      <label key={service.id} className="flex items-center justify-between p-2 hover:bg-white rounded-lg transition-colors cursor-pointer group">
+                                        <div className="flex items-center space-x-3">
+                                          <input 
+                                            type="checkbox"
+                                            checked={(entry.selectedServiceIds || []).includes(service.id)}
+                                            onChange={(e) => {
+                                              const currentIds = entry.selectedServiceIds || [];
+                                              if (e.target.checked) {
+                                                updateEntry(entry.id, { selectedServiceIds: [...currentIds, service.id] });
+                                              } else {
+                                                updateEntry(entry.id, { selectedServiceIds: currentIds.filter(id => id !== service.id) });
+                                              }
+                                            }}
+                                            className="w-4 h-4 rounded border-[#9932CC] text-[#9932CC] focus:ring-[#9932CC]"
+                                          />
+                                          <span className="text-sm font-medium group-hover:text-[#9932CC]">{service.title}</span>
+                                        </div>
+                                        <span className="text-[10px] font-mono font-bold opacity-60">+{formatCurrency(service.license_cost)}</span>
+                                      </label>
+                                    ))
+                                  }
+                                  {allProducts.filter(p => allProducts.find(sys => sys.id === entry.baseProductId)?.related_product_ids?.includes(p.id)).length === 0 && (
+                                    <p className="text-[10px] italic opacity-40">Нет связанных сервисов</p>
+                                  )}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>

@@ -15,7 +15,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db, auth } from '../firebase';
-import { ProjectModule, Estimate, UserProfile, Project, Product, SpecialistRate, Service } from '../../types';
+import { AuditLog, ProjectModule, Estimate, UserProfile, Project, Product, SpecialistRate, Service } from '../../types';
 
 enum OperationType {
   CREATE = 'create',
@@ -55,6 +55,35 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
 }
 
 export const DataService = {
+  // Audit Logs
+  async getAuditLogs(): Promise<AuditLog[]> {
+    const path = 'audit_logs';
+    try {
+      const q = query(collection(db, path), orderBy('timestamp', 'desc'), limit(100));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AuditLog));
+    } catch (error) {
+      handleFirestoreError(error, OperationType.LIST, path);
+    }
+    return [];
+  },
+
+  async logAction(action: string, details: string) {
+    if (!auth.currentUser) return;
+    const path = 'audit_logs';
+    try {
+      await addDoc(collection(db, path), {
+        user_id: auth.currentUser.uid,
+        user_email: auth.currentUser.email,
+        action,
+        details,
+        timestamp: serverTimestamp(),
+      });
+    } catch (error) {
+       console.error("Logging failed:", error);
+    }
+  },
+
   // Modules
   async getModules(): Promise<ProjectModule[]> {
     const path = 'modules';
@@ -91,6 +120,7 @@ export const DataService = {
         created_at: serverTimestamp(),
         updated_at: serverTimestamp(),
       });
+      await this.logAction('Создание модуля', `Название: ${data.title}`);
       return docRef.id;
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, path);
@@ -104,6 +134,7 @@ export const DataService = {
         ...data,
         updated_at: serverTimestamp(),
       });
+      await this.logAction('Обновление модуля', `ID: ${id}`);
     } catch (error) {
       handleFirestoreError(error, OperationType.UPDATE, path);
     }
@@ -129,6 +160,7 @@ export const DataService = {
         ...data,
         created_at: serverTimestamp(),
       });
+      await this.logAction('Создание оценки', `Проект ID: ${data.project_id}, Модулей: ${data.labor_details?.length || 0}`);
       return docRef.id;
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, path);
@@ -147,6 +179,7 @@ export const DataService = {
         license_support_cost: licenseSupport || 0,
         technical_support_cost: technicalSupport || 0,
       });
+      await this.logAction('Создание проекта', `Название: ${name}`);
       return docRef.id;
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, path);
@@ -173,6 +206,7 @@ export const DataService = {
         ...data,
         created_at: serverTimestamp(),
       });
+      await this.logAction('Создание продукта', `Название: ${data.title}`);
       return docRef.id;
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, path);
@@ -183,6 +217,7 @@ export const DataService = {
     const path = `products/${id}`;
     try {
       await updateDoc(doc(db, 'products', id), data);
+      await this.logAction('Обновление продукта', `ID: ${id}`);
     } catch (error) {
       handleFirestoreError(error, OperationType.UPDATE, path);
     }
@@ -208,6 +243,7 @@ export const DataService = {
         ...data,
         created_at: serverTimestamp(),
       });
+      await this.logAction('Создание услуги', `Название: ${data.title}`);
       return docRef.id;
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, path);
@@ -218,6 +254,7 @@ export const DataService = {
     const path = `services/${id}`;
     try {
       await updateDoc(doc(db, 'services', id), data);
+      await this.logAction('Обновление услуги', `ID: ${id}`);
     } catch (error) {
       handleFirestoreError(error, OperationType.UPDATE, path);
     }
@@ -227,6 +264,7 @@ export const DataService = {
     const path = `services/${id}`;
     try {
       await deleteDoc(doc(db, 'services', id));
+      await this.logAction('Удаление услуги', `ID: ${id}`);
     } catch (error) {
       handleFirestoreError(error, OperationType.DELETE, path);
     }
@@ -252,6 +290,7 @@ export const DataService = {
         ...data,
         created_at: serverTimestamp(),
       });
+      await this.logAction('Создание ставки', `Роль: ${data.role}`);
       return docRef.id;
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, path);
@@ -262,6 +301,7 @@ export const DataService = {
     const path = `rates/${id}`;
     try {
       await updateDoc(doc(db, 'rates', id), data);
+      await this.logAction('Обновление ставки', `ID: ${id}`);
     } catch (error) {
       handleFirestoreError(error, OperationType.UPDATE, path);
     }
@@ -271,6 +311,7 @@ export const DataService = {
     const path = `rates/${id}`;
     try {
       await deleteDoc(doc(db, 'rates', id));
+      await this.logAction('Удаление ставки', `ID: ${id}`);
     } catch (error) {
       handleFirestoreError(error, OperationType.DELETE, path);
     }
@@ -280,6 +321,7 @@ export const DataService = {
     const path = `modules/${id}`;
     try {
       await deleteDoc(doc(db, 'modules', id));
+      await this.logAction('Удаление модуля', `ID: ${id}`);
     } catch (error) {
       handleFirestoreError(error, OperationType.DELETE, path);
     }
@@ -289,6 +331,7 @@ export const DataService = {
     const path = `products/${id}`;
     try {
       await deleteDoc(doc(db, 'products', id));
+      await this.logAction('Удаление продукта', `ID: ${id}`);
     } catch (error) {
       handleFirestoreError(error, OperationType.DELETE, path);
     }
@@ -319,6 +362,7 @@ export const DataService = {
         deleteDoc(doc(db, 'projects', id)),
         ...deletePromises
       ]);
+      await this.logAction('Удаление проекта', `ID: ${id}`);
     } catch (error) {
       handleFirestoreError(error, OperationType.DELETE, path);
     }

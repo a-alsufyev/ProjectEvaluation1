@@ -34,12 +34,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           if (userDoc.exists()) {
-            setProfile(userDoc.data() as UserProfile);
+            const existingProfile = userDoc.data() as UserProfile;
+            const isAdminEmail = user.email === 'aalsufyev@embedika.ru';
+            
+            if (isAdminEmail && existingProfile.role !== UserRole.ADMIN) {
+              const updatedProfile = { ...existingProfile, role: UserRole.ADMIN };
+              await setDoc(doc(db, 'users', user.uid), updatedProfile);
+              setProfile(updatedProfile);
+            } else {
+              setProfile(existingProfile);
+            }
           } else {
+            const isAdmin = user.email === 'aalsufyev@embedika.ru';
             const newProfile: UserProfile = {
               id: user.uid,
               email: user.email || '',
-              role: UserRole.ANALYST,
+              role: isAdmin ? UserRole.ADMIN : UserRole.ANALYST,
               displayName: user.displayName || 'User',
             };
             await setDoc(doc(db, 'users', user.uid), newProfile);

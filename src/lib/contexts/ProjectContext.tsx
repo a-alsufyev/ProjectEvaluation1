@@ -11,6 +11,7 @@ export interface ProjectModuleEntry {
   comment: string;
   baseModuleId?: string;
   baseProductId?: string;
+  selectedServiceIds?: string[];
 }
 
 interface ProjectContextType {

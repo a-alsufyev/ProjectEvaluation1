@@ -59,6 +59,8 @@ export interface Product {
   license_cost: number;
   description: string;
   created_at: string;
+  type?: 'system' | 'service';
+  related_product_ids?: string[];
 }
 
 export interface Project {
@@ -85,6 +87,15 @@ export interface Estimate {
   created_by: string;
   created_at: string;
   labor_details?: LaborDetail[];
+}
+
+export interface AuditLog {
+  id: string;
+  user_id: string;
+  user_email: string;
+  action: string;
+  details: string;
+  timestamp: any;
 }
 
 export interface SearchResult extends ProjectModule {
