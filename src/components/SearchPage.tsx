@@ -74,7 +74,7 @@ export function SearchPage({ initialQuery = '', onSelectModule }: SearchPageProp
     <div className="space-y-8 pb-20">
       <div className="flex items-end justify-between border-b-2 border-[#9932CC] pb-6">
         <div className="space-y-1">
-          <h1 className="text-4xl font-bold tracking-tighter uppercase italic serif">Результаты поиска</h1>
+          <h1 className="text-4xl font-bold tracking-tighter uppercase serif">Результаты поиска</h1>
           <p className="text-sm opacity-60">Найдено {results.length} модулей для "{query}"</p>
         </div>
         
@@ -144,13 +144,13 @@ export function SearchPage({ initialQuery = '', onSelectModule }: SearchPageProp
                 <div className="flex-1 space-y-4">
                   <div className="space-y-1">
                     <div className="flex items-center space-x-2">
-                       <h3 className="text-2xl font-bold group-hover:underline group-hover:text-[#9932CC] italic serif transition-colors">{module.title}</h3>
+                       <h3 className="text-2xl font-bold group-hover:underline group-hover:text-[#9932CC] serif transition-colors">{module.title}</h3>
                        <ArrowUpRight size={20} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#9932CC]" />
                     </div>
                     <p className="text-xs uppercase tracking-widest font-bold text-black/40">{module.source_project} — {module.category}</p>
                   </div>
                   
-                  <p className="text-sm line-clamp-3 text-black/80 leading-relaxed font-medium italic">{module.description}</p>
+                  <p className="text-sm line-clamp-3 text-black/80 leading-relaxed font-medium">{module.description}</p>
                   
                   <div className="flex flex-wrap gap-2">
                     {module.tags.map(tag => (
@@ -185,7 +185,7 @@ export function SearchPage({ initialQuery = '', onSelectModule }: SearchPageProp
             <Search size={48} className="mx-auto text-[#9932CC]/20" />
             <div className="space-y-1">
               <p className="text-xl font-bold">Ничего не найдено</p>
-              <p className="text-sm opacity-50 italic">Попробуйте изменить запрос или использовать семантический поиск</p>
+              <p className="text-sm opacity-50">Попробуйте изменить запрос или использовать семантический поиск</p>
             </div>
           </div>
         )}

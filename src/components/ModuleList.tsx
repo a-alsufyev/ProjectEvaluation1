@@ -179,7 +179,7 @@ export function ModuleList() {
               className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl border-2 border-[#9932CC] space-y-6"
             >
               <div className="flex items-center justify-between border-b pb-4">
-                <h3 className="text-xl font-bold italic serif text-[#9932CC]">{selectedLaborDetails.title}</h3>
+                <h3 className="text-xl font-bold serif text-[#9932CC]">{selectedLaborDetails.title}</h3>
                 <button onClick={() => setSelectedLaborDetails(null)} className="p-2 hover:bg-[#9932CC]/10 rounded-lg">
                   <Plus className="rotate-45" size={24} />
                 </button>
@@ -228,7 +228,7 @@ export function ModuleList() {
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-xl font-bold tracking-tight">Удалить {view === 'modules' ? 'модуль' : 'продукт'}?</h3>
-                  <p className="text-sm text-black/60 italic font-medium">
+                  <p className="text-sm text-black/60 font-medium">
                     "{itemToDelete.title}" будет безвозвратно удален из базы данных.
                   </p>
                 </div>
@@ -267,7 +267,7 @@ export function ModuleList() {
               exit={{ scale: 0.9, y: 20 }}
               className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border-2 border-[#9932CC] space-y-6 max-h-[90vh] flex flex-col"
             >
-              <h2 className="text-2xl font-bold tracking-tight italic serif shrink-0">
+              <h2 className="text-2xl font-bold tracking-tight serif shrink-0">
                 {editingId ? 'Редактировать' : 'Добавить'} {view === 'modules' ? 'модуль' : view === 'products' ? 'продукт' : 'работу'}
               </h2>
               
@@ -354,7 +354,7 @@ export function ModuleList() {
                           ))
                         }
                         {products.filter(p => p.id !== editingId && (formData.type === 'service' ? p.type !== 'service' : p.type === 'service')).length === 0 && (
-                          <p className="text-[10px] italic opacity-40">Нет доступных {formData.type === 'service' ? 'систем' : 'сервисов'}</p>
+                          <p className="text-[10px] opacity-40">Нет доступных {formData.type === 'service' ? 'систем' : 'сервисов'}</p>
                         )}
                       </div>
                     </div>
@@ -454,7 +454,7 @@ export function ModuleList() {
             </button>
           </div>
           <div className="space-y-1">
-            <h1 className="text-4xl font-bold tracking-tighter uppercase italic serif">
+            <h1 className="text-4xl font-bold tracking-tighter uppercase serif">
               {view === 'modules' ? 'База модулей' : view === 'products' ? 'Каталог продуктов' : 'Типовые работы'}
             </h1>
             <p className="text-sm opacity-60">
@@ -501,7 +501,7 @@ export function ModuleList() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-[#9932CC] text-white uppercase text-[10px] tracking-widest font-bold">
-              <th className="p-6 italic serif normal-case text-sm">
+              <th className="p-6 serif normal-case text-sm">
                 {view === 'modules' ? 'Модуль / Проект' : view === 'products' ? 'Название продукта' : 'Название работы'}
               </th>
               <th className="p-6 text-center">{view === 'modules' ? 'Категория' : view === 'products' ? 'Тип' : 'Трудозатраты'}</th>
@@ -545,7 +545,7 @@ export function ModuleList() {
                             {(item as Product).type === 'service' ? 'Сервис' : 'Система'}
                           </span>
                           {(item as Product).related_product_ids && (item as Product).related_product_ids!.length > 0 && (
-                            <span className="text-[8px] mt-1 font-bold opacity-40 italic">
+                            <span className="text-[8px] mt-1 font-bold opacity-40">
                               {(item as Product).type === 'service' ? 'Входит в: ' : 'Состав: '}
                               {(item as Product).related_product_ids!.length}
                             </span>
@@ -571,7 +571,7 @@ export function ModuleList() {
                     <td className="p-6 font-mono text-sm font-bold text-[#9932CC]">
                       {formatCurrency(view === 'products' ? (item as Product).license_cost : (item as any).development_cost)}
                     </td>
-                    <td className="p-6 font-mono text-sm font-bold text-[#9932CC]/60 italic font-sans text-xs">
+                    <td className="p-6 font-mono text-sm font-bold text-[#9932CC]/60 font-sans text-xs">
                        {view !== 'products' && 'integration_cost' in item 
                          ? formatCurrency((item as any).integration_cost) 
                          : new Date(item.created_at || Date.now()).toLocaleDateString()
@@ -599,7 +599,7 @@ export function ModuleList() {
                 <tr>
                   <td colSpan={5} className="p-20 text-center space-y-4">
                     <Database size={48} className="mx-auto text-[#9932CC]/10" />
-                    <p className="text-sm font-bold opacity-40 italic text-[#9932CC]">Данные не найдены</p>
+                    <p className="text-sm font-bold opacity-40 text-[#9932CC]">Данные не найдены</p>
                   </td>
                 </tr>
               )}

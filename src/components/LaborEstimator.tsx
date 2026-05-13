@@ -101,7 +101,7 @@ export const LaborEstimator: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center py-20 space-y-4">
         <Loader2 className="animate-spin text-[#9932CC]" size={40} />
-        <p className="text-[#9932CC] font-bold italic serif">Загрузка конструктора...</p>
+        <p className="text-[#9932CC] font-bold serif">Загрузка конструктора...</p>
       </div>
     );
   }
@@ -112,7 +112,7 @@ export const LaborEstimator: React.FC = () => {
         <div className="space-y-4">
           <div className="flex items-center space-x-3 text-[#9932CC]">
             <Calculator size={32} />
-            <h1 className="text-4xl font-black tracking-tighter uppercase italic serif">Конструктор оценки</h1>
+            <h1 className="text-4xl font-black tracking-tighter uppercase serif">Конструктор оценки</h1>
           </div>
           <p className="text-black/60 font-medium max-w-lg">
             Создавайте новые модули или типовые работы на основе трудозатрат специалистов.
@@ -159,7 +159,7 @@ export const LaborEstimator: React.FC = () => {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Введите название..."
-                  className="w-full bg-transparent border-b-2 border-black/5 pb-4 text-3xl font-bold italic serif outline-none focus:border-[#9932CC] transition-all text-[#9932CC]"
+                  className="w-full bg-transparent border-b-2 border-black/5 pb-4 text-3xl font-bold serif outline-none focus:border-[#9932CC] transition-all text-[#9932CC]"
                 />
               </div>
 
@@ -176,7 +176,7 @@ export const LaborEstimator: React.FC = () => {
 
             <div className="space-y-6">
               <div className="flex items-center justify-between border-b border-black/5 pb-4">
-                <h3 className="text-xl font-bold italic serif">Состав команды и время</h3>
+                <h3 className="text-xl font-bold serif">Состав команды и время</h3>
                 <span className="text-[10px] uppercase font-bold opacity-40">Трудозатраты в днях</span>
               </div>
 
@@ -202,7 +202,7 @@ export const LaborEstimator: React.FC = () => {
                           <div className="w-10 h-10 bg-[#9932CC]/5 text-[#9932CC] rounded-xl flex items-center justify-center">
                             <Clock size={20} />
                           </div>
-                          <p className="font-bold text-[#9932CC] italic serif text-lg">{labor.roleName}</p>
+                          <p className="font-bold text-[#9932CC] serif text-lg">{labor.roleName}</p>
                         </div>
 
                         <div className="flex items-center space-x-8 mt-4 md:mt-0">
@@ -250,7 +250,7 @@ export const LaborEstimator: React.FC = () => {
             <div className="relative z-10 space-y-8">
               <div className="space-y-1">
                 <p className="text-[10px] uppercase font-bold opacity-60 tracking-widest">Общая оценка разработки</p>
-                <p className="text-5xl font-black tracking-tighter italic serif">{formatCurrency(totalCost)}</p>
+                <p className="text-5xl font-black tracking-tighter serif">{formatCurrency(totalCost)}</p>
               </div>
 
               <div className="pt-4 border-t border-white/10">
@@ -279,7 +279,7 @@ export const LaborEstimator: React.FC = () => {
 
           {/* Specialist Selection List */}
           <div className="bg-white border-2 border-black/5 rounded-3xl p-6 shadow-sm space-y-4">
-            <h3 className="text-lg font-bold italic serif flex items-center text-[#9932CC]">
+            <h3 className="text-lg font-bold serif flex items-center text-[#9932CC]">
               <Plus size={20} className="mr-2" /> Добавить специалиста
             </h3>
             

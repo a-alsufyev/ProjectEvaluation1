@@ -44,7 +44,7 @@ export const AdminPanel: React.FC = () => {
             <div className="p-2 bg-black text-white rounded-lg">
               <Shield size={24} />
             </div>
-            <h1 className="text-4xl font-black tracking-tight uppercase italic serif">Администрирование</h1>
+            <h1 className="text-4xl font-black tracking-tight uppercase serif">Администрирование</h1>
           </div>
           <p className="text-black/60 max-w-xl font-medium">
             Логирование действий пользователей и управление системными параметрами.
@@ -81,7 +81,7 @@ export const AdminPanel: React.FC = () => {
                 </tr>
               ) : logs.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="p-12 text-center text-black/40 font-bold italic">
+                  <td colSpan={4} className="p-12 text-center text-black/40 font-bold">
                     Логов пока нет
                   </td>
                 </tr>
@@ -108,7 +108,7 @@ export const AdminPanel: React.FC = () => {
                         {log.action}
                       </span>
                     </td>
-                    <td className="p-6 text-sm italic font-medium opacity-70">
+                    <td className="p-6 text-sm font-medium opacity-70">
                       {log.details}
                     </td>
                   </motion.tr>

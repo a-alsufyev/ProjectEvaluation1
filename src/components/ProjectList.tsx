@@ -68,7 +68,7 @@ const ProjectListItem: React.FC<{
             <div className="space-y-1">
               <h3 
                 onClick={toggleExpand}
-                className="text-xl font-bold italic serif group-hover:text-[#9932CC] transition-all cursor-pointer"
+                className="text-xl font-bold serif group-hover:text-[#9932CC] transition-all cursor-pointer"
               >
                 {project.name}
               </h3>
@@ -190,7 +190,7 @@ const ProjectListItem: React.FC<{
                   <div className="flex justify-end pt-4 border-t border-[#9932CC]/20">
                     <div className="text-right">
                       <p className="text-[10px] uppercase font-bold opacity-40">Итоговая стоимость проекта</p>
-                      <p className="text-3xl font-black italic serif text-[#9932CC]">
+                      <p className="text-3xl font-black serif text-[#9932CC]">
                         {formatCurrency(totalWork + totalLicense + (project.technical_support_cost || 0) + (project.license_support_cost || 0))}
                       </p>
                     </div>
@@ -287,7 +287,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({ onViewProject, onNewPr
     return (
       <div className="flex flex-col items-center justify-center py-20 space-y-4">
         <Loader2 className="animate-spin text-[#9932CC]" size={40} />
-        <p className="text-[#9932CC] font-bold italic serif">Загрузка проектов...</p>
+        <p className="text-[#9932CC] font-bold serif">Загрузка проектов...</p>
       </div>
     );
   }
@@ -298,7 +298,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({ onViewProject, onNewPr
         <div className="space-y-4">
           <div className="flex items-center space-x-3 text-[#9932CC]">
             <Folder size={32} />
-            <h1 className="text-4xl font-black tracking-tighter uppercase italic serif">Мои Проекты</h1>
+            <h1 className="text-4xl font-black tracking-tighter uppercase serif">Мои Проекты</h1>
           </div>
           <p className="text-black/60 font-medium max-w-lg">
             Список всех созданных оценок и проектов с возможностью экспорта в Excel
@@ -332,7 +332,7 @@ export const ProjectList: React.FC<ProjectListProps> = ({ onViewProject, onNewPr
             <Folder size={40} />
           </div>
           <div className="space-y-2">
-            <h3 className="text-xl font-bold italic serif">Проекты не найдены</h3>
+            <h3 className="text-xl font-bold serif">Проекты не найдены</h3>
             <p className="text-black/40">Начните с создания вашего первого проекта</p>
           </div>
           <button 

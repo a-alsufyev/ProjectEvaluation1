@@ -41,7 +41,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
             <motion.h1 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-lg font-bold tracking-tighter uppercase italic serif"
+              className="text-lg font-bold tracking-tighter uppercase serif"
             >
               PE Intelligence
             </motion.h1>

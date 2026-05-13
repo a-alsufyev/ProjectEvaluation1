@@ -45,10 +45,10 @@ function AppContent() {
         <div className="max-w-md w-full space-y-12 text-center">
           <div className="space-y-4">
              <div className="w-20 h-20 bg-[#9932CC] rounded-3xl mx-auto flex items-center justify-center rotate-3 shadow-xl">
-               <span className="text-white text-3xl font-bold italic serif">PE</span>
+               <span className="text-white text-3xl font-bold serif">PE</span>
              </div>
              <div className="space-y-2">
-                <h1 className="text-4xl font-bold tracking-tighter uppercase italic serif">System Intelligence</h1>
+                <h1 className="text-4xl font-bold tracking-tighter uppercase serif">System Intelligence</h1>
                 <p className="text-black/60 font-medium">Ускоренная оценка проектных модулей на основе ИИ и исторических данных</p>
              </div>
           </div>

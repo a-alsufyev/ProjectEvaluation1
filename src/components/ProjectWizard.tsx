@@ -275,7 +275,7 @@ export function ProjectWizard({ onCancel, onSuccess }: ProjectWizardProps) {
             <FolderPlus size={24} />
           </div>
           <div className="space-y-1">
-            <h1 className="text-4xl font-bold tracking-tighter uppercase italic serif">Новый проект</h1>
+            <h1 className="text-4xl font-bold tracking-tighter uppercase serif">Новый проект</h1>
             <p className="text-xs font-bold opacity-40 uppercase tracking-widest">Групповая оценка модулей</p>
           </div>
         </div>
@@ -292,7 +292,7 @@ export function ProjectWizard({ onCancel, onSuccess }: ProjectWizardProps) {
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
               placeholder="Напр: Система лояльности 2.0"
-              className="w-full bg-white border-2 border-[#9932CC] rounded-2xl p-6 text-2xl font-bold italic serif focus:ring-8 focus:ring-[#9932CC]/5 outline-none transition-all text-[#9932CC] placeholder:text-[#9932CC]/20"
+              className="w-full bg-white border-2 border-[#9932CC] rounded-2xl p-6 text-2xl font-bold serif focus:ring-8 focus:ring-[#9932CC]/5 outline-none transition-all text-[#9932CC] placeholder:text-[#9932CC]/20"
             />
           </div>
 
@@ -403,7 +403,7 @@ export function ProjectWizard({ onCancel, onSuccess }: ProjectWizardProps) {
                           type="text"
                           value={entry.title}
                           onChange={(e) => updateEntry(entry.id, { title: e.target.value })}
-                          className="w-full bg-transparent border-b border-[#9932CC]/10 text-xl font-bold italic serif focus:border-[#9932CC] outline-none transition-all pb-2 text-[#9932CC]"
+                          className="w-full bg-transparent border-b border-[#9932CC]/10 text-xl font-bold serif focus:border-[#9932CC] outline-none transition-all pb-2 text-[#9932CC]"
                           placeholder={entry.type === 'module' ? "Название модуля..." : entry.type === 'product' ? "Название продукта..." : "Название работы..."}
                         />
                         {entry.type === 'module' || entry.type === 'service' ? (
@@ -471,7 +471,7 @@ export function ProjectWizard({ onCancel, onSuccess }: ProjectWizardProps) {
                                     ))
                                   }
                                   {allProducts.filter(p => allProducts.find(sys => sys.id === entry.baseProductId)?.related_product_ids?.includes(p.id)).length === 0 && (
-                                    <p className="text-[10px] italic opacity-40">Нет связанных сервисов</p>
+                                    <p className="text-[10px] opacity-40">Нет связанных сервисов</p>
                                   )}
                                 </div>
                               </div>
@@ -585,7 +585,7 @@ export function ProjectWizard({ onCancel, onSuccess }: ProjectWizardProps) {
               </button>
             </div>
 
-            <div className="p-6 bg-white border border-[#9932CC]/20 rounded-3xl space-y-4 italic text-xs leading-relaxed text-black/60 shadow-sm">
+            <div className="p-6 bg-white border border-[#9932CC]/20 rounded-3xl space-y-4 text-xs leading-relaxed text-black/60 shadow-sm">
                Все новые модули будут автоматически сохранены в базу данных как исторические данные проекта <span className="font-bold text-[#9932CC] underline underline-offset-2">{projectName || "..."}</span>. Это позволит использовать их для будущих оценок.
             </div>
           </div>

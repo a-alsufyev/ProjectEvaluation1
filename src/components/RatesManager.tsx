@@ -67,7 +67,7 @@ export const RatesManager: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center py-20 space-y-4">
         <Loader2 className="animate-spin text-[#9932CC]" size={40} />
-        <p className="text-[#9932CC] font-bold italic serif">Загрузка ставок...</p>
+        <p className="text-[#9932CC] font-bold serif">Загрузка ставок...</p>
       </div>
     );
   }
@@ -93,7 +93,7 @@ export const RatesManager: React.FC = () => {
                 <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Trash2 size={32} />
                 </div>
-                <h3 className="text-xl font-bold italic serif">Удалить ставку?</h3>
+                <h3 className="text-xl font-bold serif">Удалить ставку?</h3>
                 <p className="text-black/60 text-sm">Это действие необратимо. Ставка будет удалена из базы данных.</p>
               </div>
 
@@ -121,7 +121,7 @@ export const RatesManager: React.FC = () => {
         <div className="space-y-4">
           <div className="flex items-center space-x-3 text-[#9932CC]">
             <DollarSign size={32} />
-            <h1 className="text-4xl font-black tracking-tighter uppercase italic serif">Ставки специалистов</h1>
+            <h1 className="text-4xl font-black tracking-tighter uppercase serif">Ставки специалистов</h1>
           </div>
           <p className="text-black/60 font-medium max-w-lg">
             Управляйте ролями и стоимостью часа/дня разработки. Эти данные используются в конструкторе трудозатрат.
@@ -151,7 +151,7 @@ export const RatesManager: React.FC = () => {
               exit={{ scale: 0.9, y: 20 }}
               className="bg-white border-2 border-[#9932CC] rounded-3xl p-8 max-w-md w-full shadow-2xl space-y-6"
             >
-              <h3 className="text-2xl font-bold italic serif text-[#9932CC]">Новый специалист</h3>
+              <h3 className="text-2xl font-bold serif text-[#9932CC]">Новый специалист</h3>
               
               <div className="space-y-4">
                 <div className="space-y-1">
@@ -242,7 +242,7 @@ export const RatesManager: React.FC = () => {
                         type="text" 
                         defaultValue={rate.role}
                         onBlur={(e) => handleUpdate(rate.id, 'role', e.target.value)}
-                        className="bg-transparent font-bold italic serif text-lg outline-none w-full text-[#9932CC] focus:ring-1 focus:ring-[#9932CC]/20 rounded px-1"
+                        className="bg-transparent font-bold serif text-lg outline-none w-full text-[#9932CC] focus:ring-1 focus:ring-[#9932CC]/20 rounded px-1"
                       />
                     </td>
                     <td className="p-6 text-center">

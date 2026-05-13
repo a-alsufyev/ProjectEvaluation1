@@ -74,7 +74,7 @@ export function Dashboard({ onSearch, onSelectModule }: DashboardProps) {
           >
             Intellectual evaluation system
           </motion.p>
-          <h1 className="text-6xl font-bold tracking-tighter leading-none italic serif">
+          <h1 className="text-6xl font-bold tracking-tighter leading-none serif">
             Найдите похожие<br/>модули
           </h1>
         </div>
@@ -110,7 +110,7 @@ export function Dashboard({ onSearch, onSelectModule }: DashboardProps) {
                   >
                     <div className="flex-1">
                       <p className="font-bold">{m.title}</p>
-                      <p className="text-xs opacity-60 italic">{'source_project' in m ? m.source_project : 'Готовый продукт'}</p>
+                      <p className="text-xs opacity-60">{'source_project' in m ? m.source_project : 'Готовый продукт'}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-mono">{formatCurrency('license_cost' in m ? m.license_cost : (m.development_cost + m.integration_cost))}</p>
@@ -176,7 +176,7 @@ export function Dashboard({ onSearch, onSelectModule }: DashboardProps) {
                     ))}
                   </div>
                 </div>
-                <p className="text-xs text-black/60 line-clamp-2 italic">{m.description}</p>
+                <p className="text-xs text-black/60 line-clamp-2">{m.description}</p>
                 <div className="mt-4 flex items-center justify-between">
                   <span className="text-[10px] uppercase font-bold tracking-widest opacity-40">{m.source_project}</span>
                   <span className="text-sm font-mono font-bold text-[#9932CC]">{formatCurrency(m.development_cost)}</span>

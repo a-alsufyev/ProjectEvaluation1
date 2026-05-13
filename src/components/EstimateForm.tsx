@@ -67,7 +67,7 @@ export function EstimateForm({ baseModule, onCancel, onSuccess }: EstimateFormPr
       <div className="p-20 text-center space-y-6">
         <Sparkles size={48} className="mx-auto text-[#9932CC]/20" />
         <div className="space-y-2">
-          <p className="text-xl font-bold italic serif">Выберите модуль для оценки</p>
+          <p className="text-xl font-bold serif">Выберите модуль для оценки</p>
           <p className="text-sm opacity-50">Вы можете найти модуль в поиске или выбрать из базы данных</p>
         </div>
         <button 
@@ -85,7 +85,7 @@ export function EstimateForm({ baseModule, onCancel, onSuccess }: EstimateFormPr
       <div className="flex items-center justify-between border-b-2 border-[#9932CC] pb-6">
         <div className="space-y-1">
           <p className="text-xs font-bold uppercase tracking-widest opacity-40">Создание оценки на базе:</p>
-          <h1 className="text-4xl font-bold tracking-tighter italic serif">{baseModule.title}</h1>
+          <h1 className="text-4xl font-bold tracking-tighter serif">{baseModule.title}</h1>
         </div>
         <button onClick={onCancel} className="p-2 hover:bg-[#9932CC]/5 rounded-full transition-colors">
           <X size={24} />
@@ -166,7 +166,7 @@ export function EstimateForm({ baseModule, onCancel, onSuccess }: EstimateFormPr
             <Sparkles className="absolute top-[-10px] right-[-10px] text-white opacity-20 group-hover:rotate-12 transition-transform duration-700" size={120} />
             <div className="relative z-10 space-y-6">
               <div className="space-y-2">
-                <h3 className="text-xl font-bold italic serif">AI Рекомендация</h3>
+                <h3 className="text-xl font-bold serif">AI Рекомендация</h3>
                 <p className="text-xs opacity-80">ИИ анализирует исторические данные и предлагает оптимальный диапазон стоимости.</p>
               </div>
 
@@ -199,7 +199,7 @@ export function EstimateForm({ baseModule, onCancel, onSuccess }: EstimateFormPr
                       <p className="text-xs font-mono font-bold tracking-tighter">{formatCurrency(recommendation.max)}</p>
                     </div>
                   </div>
-                  <p className="text-[10px] leading-relaxed italic opacity-90">{recommendation.explanation}</p>
+                  <p className="text-[10px] leading-relaxed opacity-90">{recommendation.explanation}</p>
                   <button 
                     onClick={() => {
                         setDevCost(recommendation.avg);
